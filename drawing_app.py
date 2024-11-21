@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import colorchooser, filedialog, messagebox, ttk
+from tkinter import colorchooser, filedialog, messagebox
 from PIL import Image, ImageDraw
 
 
@@ -43,31 +43,35 @@ class DrawingApp:
         sizes = [1, 2, 5, 10]
         self.brush_size = tk.IntVar(control_frame)
         self.brush_size.set(sizes[1])
-        brush_size_menu = tk.OptionMenu(control_frame, self.brush_size_scale, *sizes, command = self.update_brush_size)
+        brush_size_menu = tk.OptionMenu(control_frame, self.brush_size_scale, *sizes, command=self.update_brush_size)
         brush_size_menu.pack(side=tk.LEFT)
 
 
     def paint(self, event):
         if self.last_x and self.last_y:
             self.canvas.create_line(self.last_x, self.last_y, event.x, event.y,
-                                    width = self.brush_size_scale.get(), fill=self.pen_color,
-                                    capstyle = tk.ROUND, smooth=tk.TRUE)
+                                    width=self.brush_size_scale.get(), fill=self.pen_color,
+                                    capstyle=tk.ROUND, smooth=tk.TRUE)
             self.draw.line([self.last_x, self.last_y, event.x, event.y], fill=self.pen_color,
-                           width = self.brush_size_scale.get())
+                           width=self.brush_size_scale.get())
 
         self.last_x = event.x
         self.last_y = event.y
 
+
     def reset(self, event):
         self.last_x, self.last_y = None, None
+
 
     def clear_canvas(self):
         self.canvas.delete("all")
         self.image = Image.new("RGB", (600, 400), "white")
         self.draw = ImageDraw.Draw(self.image)
 
+
     def choose_color(self):
         self.pen_color = colorchooser.askcolor(color=self.pen_color)[1]
+
 
     def save_image(self):
         file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
@@ -77,8 +81,10 @@ class DrawingApp:
             self.image.save(file_path)
             messagebox.showinfo("Информация", "Изображение успешно сохранено!")
 
+
     def update_brush_size(self, size):
         self.brush_size = int(size)
+
 
 def main():
     root = tk.Tk()
