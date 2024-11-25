@@ -46,6 +46,10 @@ class DrawingApp:
         brush_size_menu = tk.OptionMenu(control_frame, self.brush_size_scale, *sizes, command=self.update_brush_size)
         brush_size_menu.pack(side=tk.LEFT)
 
+        """Добавляем ластик"""
+        self.eraser_get_button = tk.Button(control_frame, text="Ластик", command=self.eraser_get)
+        self.eraser_get_button.pack(side=tk.LEFT)
+
 
     def paint(self, event):
         if self.last_x and self.last_y:
@@ -84,6 +88,16 @@ class DrawingApp:
 
     def update_brush_size(self, size):
         self.brush_size = int(size)
+
+
+    def eraser_get(self):
+        #Метод для работы ластика
+        if self.pen_color == "white":
+            self.pen_color = self.previous_color
+        else:
+            # Сохраняем текущий цвет и переключаем на ластик
+            self.previous_color = self.pen_color
+            self.pen_color = "white"
 
 
 def main():
