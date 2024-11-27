@@ -22,6 +22,8 @@ class DrawingApp:
         self.canvas.bind('<B1-Motion>', self.paint)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
 
+        self.canvas.bind('<Button-3>', self.pick_color) # Обработчик выбора цвета с холста
+
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -99,6 +101,9 @@ class DrawingApp:
             self.previous_color = self.pen_color
             self.pen_color = "white"
 
+    def pick_color(self, event): # Функция которая обновляет цвет с холста
+        color = self.image.getpixel((event.x, event.y))  # Получаем цвет пикселя
+        self.pen_color = '#%02x%02x%02x' % color 
 
 def main():
     root = tk.Tk()
