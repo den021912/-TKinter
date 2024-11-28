@@ -24,6 +24,10 @@ class DrawingApp:
 
         self.canvas.bind('<Button-3>', self.pick_color) # Обработчик выбора цвета с холста
 
+        """Добавляем гарячие клавиши"""
+        self.root.bind('<Control-s>', self.save_image) # для сохранения изображения
+        self.root.bind('<Control-c>', self.choose_color) # для выбора цвета
+
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -75,18 +79,19 @@ class DrawingApp:
         self.draw = ImageDraw.Draw(self.image)
 
 
-    def choose_color(self):
+    def choose_color(self, event=None):
+        """Открывает диалоговое окно выбора цвета."""
         self.pen_color = colorchooser.askcolor(color=self.pen_color)[1]
+        self.preview_color.configure(bg=self.pen_color)
 
-
-    def save_image(self):
+    def save_image(self, event=None):
+        """Открывает диалоговое окно сохранить изображение, в случае успешного сохранения выводится сообщение об успешном сохранении."""
         file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
         if file_path:
             if not file_path.endswith('.png'):
                 file_path += '.png'
             self.image.save(file_path)
             messagebox.showinfo("Информация", "Изображение успешно сохранено!")
-
 
     def update_brush_size(self, size):
         self.brush_size = int(size)
@@ -103,7 +108,7 @@ class DrawingApp:
 
     def pick_color(self, event): # Функция которая обновляет цвет с холста
         color = self.image.getpixel((event.x, event.y))  # Получаем цвет пикселя
-        self.pen_color = '#%02x%02x%02x' % color 
+        self.pen_color = '#%02x%02x%02x' % color
 
 def main():
     root = tk.Tk()
