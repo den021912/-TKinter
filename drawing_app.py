@@ -27,6 +27,10 @@ class DrawingApp:
         """Добавляем гарячие клавиши"""
         self.root.bind('<Control-s>', self.save_image) # для сохранения изображения
         self.root.bind('<Control-c>', self.choose_color) # для выбора цвета
+        
+        """Добавление параметра для предварительного просмотра цвета кисти."""
+        self.preview_color = tk.Canvas(root, width=40, height=30, background=self.pen_color) # Создаем окошко 40*30, которое показывает текущий цвет
+        self.preview_color.pack(side=tk.LEFT)
 
 
     def setup_ui(self):
