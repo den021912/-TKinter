@@ -27,7 +27,7 @@ class DrawingApp:
         """Добавляем гарячие клавиши"""
         self.root.bind('<Control-s>', self.save_image) # для сохранения изображения
         self.root.bind('<Control-c>', self.choose_color) # для выбора цвета
-        
+
         """Добавление параметра для предварительного просмотра цвета кисти."""
         self.preview_color = tk.Canvas(root, width=40, height=30, background=self.pen_color) # Создаем окошко 40*30, которое показывает текущий цвет
         self.preview_color.pack(side=tk.LEFT)
@@ -53,22 +53,25 @@ class DrawingApp:
         sizes = [1, 2, 5, 10]
         self.brush_size = tk.IntVar(control_frame)
         self.brush_size.set(sizes[1])
-        brush_size_menu = tk.OptionMenu(control_frame, self.brush_size_scale, *sizes, command=self.update_brush_size)
-        brush_size_menu.pack(side=tk.LEFT)
+        brush_size_menu = tk.OptionMenu(control_frame, self.brush_size_scale, *sizes, command = self.update_brush_size)
+        brush_size_menu.pack(side = tk.LEFT)
 
         """Добавляем ластик"""
-        self.eraser_get_button = tk.Button(control_frame, text="Ластик", command=self.eraser_get)
-        self.eraser_get_button.pack(side=tk.LEFT)
+        self.eraser_get_button = tk.Button(control_frame, text = "Ластик", command = self.eraser_get)
+        self.eraser_get_button.pack(side = tk.LEFT)
+
+        """Добавлена кнопка для изменения размера холста"""
+        change_canvas_button = tk.Button(control_frame, text = "Изменить размер холста", command = self.change_size_canvas)
+        change_canvas_button.pack(side = tk.LEFT)
 
 
     def paint(self, event):
         if self.last_x and self.last_y:
             self.canvas.create_line(self.last_x, self.last_y, event.x, event.y,
-                                    width=self.brush_size_scale.get(), fill=self.pen_color,
-                                    capstyle=tk.ROUND, smooth=tk.TRUE)
-            self.draw.line([self.last_x, self.last_y, event.x, event.y], fill=self.pen_color,
-                           width=self.brush_size_scale.get())
-
+                                    width = self.brush_size_scale.get(), fill = self.pen_color,
+                                    capstyle = tk.ROUND, smooth = tk.TRUE)
+            self.draw.line([self.last_x, self.last_y, event.x, event.y], fill = self.pen_color,
+                           width = self.brush_size_scale.get())
         self.last_x = event.x
         self.last_y = event.y
 
@@ -85,17 +88,27 @@ class DrawingApp:
 
     def choose_color(self, event=None):
         """Открывает диалоговое окно выбора цвета."""
-        self.pen_color = colorchooser.askcolor(color=self.pen_color)[1]
-        self.preview_color.configure(bg=self.pen_color)
+        self.pen_color = colorchooser.askcolor(color = self.pen_color)[1]
+        self.preview_color.configure(bg = self.pen_color)
+
 
     def save_image(self, event=None):
         """Открывает диалоговое окно сохранить изображение, в случае успешного сохранения выводится сообщение об успешном сохранении."""
-        file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
+        file_path = filedialog.asksaveasfilename(filetypes = [('PNG files', '*.png')])
         if file_path:
             if not file_path.endswith('.png'):
                 file_path += '.png'
             self.image.save(file_path)
             messagebox.showinfo("Информация", "Изображение успешно сохранено!")
+
+
+    def change_size_canvas(self): # Функция изменения размера холста
+        width = tk.simpledialog.askinteger(title = "Изменить размер холста", prompt = "Ширина холста:")
+        height = tk.simpledialog.askinteger(title = "Изменить размер холста", prompt = "Высота холста:")
+        self.canvas.config(width = width, height = height)
+        self.image = self.image.resize((width, height))
+        self.draw = ImageDraw.Draw(self.image)
+
 
     def update_brush_size(self, size):
         self.brush_size = int(size)
@@ -110,9 +123,11 @@ class DrawingApp:
             self.previous_color = self.pen_color
             self.pen_color = "white"
 
+
     def pick_color(self, event): # Функция которая обновляет цвет с холста
         color = self.image.getpixel((event.x, event.y))  # Получаем цвет пикселя
         self.pen_color = '#%02x%02x%02x' % color
+
 
 def main():
     root = tk.Tk()
