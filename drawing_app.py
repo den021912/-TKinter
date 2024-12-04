@@ -32,6 +32,8 @@ class DrawingApp:
         self.preview_color = tk.Canvas(root, width=40, height=30, background=self.pen_color) # Создаем окошко 40*30, которое показывает текущий цвет
         self.preview_color.pack(side=tk.LEFT)
 
+        """ Привязываем обработчик события <Button-1> к холсту, чтобы вставлять текст."""
+        self.canvas.bind('<Button-1>', self.paste_text)
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -64,6 +66,13 @@ class DrawingApp:
         change_canvas_button = tk.Button(control_frame, text = "Изменить размер холста", command = self.change_size_canvas)
         change_canvas_button.pack(side = tk.LEFT)
 
+        """Кнопка Добавить текст."""
+        self.text_button = tk.Button(control_frame, text="Добавить текст", command=self.add_text)
+        self.text_button.pack(side=tk.LEFT)
+
+        """Кнопка для изменения цвета холста."""
+        self.change_color_button = tk.Button(control_frame, text="Цвет холста", command=self.change_canvas_color)
+        self.change_color_button.pack(side=tk.LEFT)
 
     def paint(self, event):
         if self.last_x and self.last_y:
@@ -127,6 +136,21 @@ class DrawingApp:
     def pick_color(self, event): # Функция которая обновляет цвет с холста
         color = self.image.getpixel((event.x, event.y))  # Получаем цвет пикселя
         self.pen_color = '#%02x%02x%02x' % color
+
+    def add_text(self):
+        text = tk.simpledialog.askstring(title='Добавить текст', prompt="Текст:")
+        self.text = text
+
+    def paste_text(self, event): # Функция вставляет текст
+        self.last_x = event.x
+        self.last_y = event.y
+        self.canvas.create_text(self.last_x, self.last_y, text=self.text, fill=self.pen_color)
+        self.text = None
+
+    def change_canvas_color(self): # Функция для изменения цвета холста.
+        color = tk.colorchooser.askcolor()
+        new_color = color[1]
+        self.canvas.config(bg=new_color)
 
 
 def main():
